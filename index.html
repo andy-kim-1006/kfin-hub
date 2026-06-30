@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KFIN Team Hub</title>
+<style>
+  :root {
+    --surface-2: #ffffff;
+    --surface-1: #f4f3ef;
+    --surface-0: #ebeae4;
+    --text-primary: #1a1a1a;
+    --text-secondary: #5f5e5a;
+    --text-muted: #888780;
+    --border: #e0ded6;
+    --border-strong: #c9c7bd;
+    --accent-bg: #e6f1fb;
+    --accent-text: #0c447c;
+    --danger-text: #791f1f;
+    --success-bg: #eaf3de;
+    --success-text: #27500a;
+    --warning-bg: #faeeda;
+    --warning-text: #633806;
+    --radius: 8px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--surface-0);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 2rem 1rem;
+    line-height: 1.6;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+  input, select, textarea, button {
+    font-family: inherit;
+    font-size: 14px;
+    border-radius: var(--radius);
+    border: 0.5px solid var(--border-strong);
+    padding: 8px 12px;
+    background: var(--surface-2);
+    color: var(--text-primary);
+  }
+  textarea { resize: vertical; }
+  button {
+    cursor: pointer;
+    background: var(--surface-2);
+    transition: background 0.15s;
+  }
+  button:hover { background: var(--surface-1); }
+  button.primary {
+    background: #1a1a1a;
+    color: white;
+    border-color: #1a1a1a;
+  }
+  button.primary:hover { background: #333; }
+  .card {
+    background: var(--surface-2);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+  }
+  .entry-meta { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+  .del-btn { font-size: 12px; padding: 4px 8px; color: var(--danger-text); border: none; background: none; }
+  .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: var(--radius); font-weight: 500; }
+  .badge-mento { background: var(--accent-bg); color: var(--accent-text); }
+  .badge-club { background: var(--success-bg); color: var(--success-text); }
+  .badge-school { background: var(--warning-bg); color: var(--warning-text); }
+  .badge-etc, .badge-idea { background: var(--surface-1); color: var(--text-secondary); }
+  .badge-progress { background: var(--warning-bg); color: var(--warning-text); }
+  .badge-done { background: var(--success-bg); color: var(--success-text); }
+  .tab-btn { flex: 1; }
+  .tab-btn.active { background: var(--surface-1); border-color: var(--border-strong); font-weight: 600; }
+  .hidden { display: none !important; }
+  .logo { font-size: 22px; font-weight: 700; text-align: center; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: var(--text-secondary); text-align: center; margin-bottom: 1.5rem; }
+  #login-error { font-size: 12px; color: var(--danger-text); min-height: 16px; text-align: center; }
+</style>
+</head>
+<body>
+
+<div id="login-screen" class="container" style="max-width: 360px;">
+  <div class="logo">KFIN Team Hub</div>
+  <p class="subtitle">이메일과 비밀번호로 로그인하세요</p>
+  <div style="display:flex; flex-direction:column; gap:10px;">
+    <input type="email" id="email-input" placeholder="이메일" style="width:100%;" />
+    <input type="password" id="password-input" placeholder="비밀번호 (6자 이상)" style="width:100%;" />
+    <button class="primary" id="login-btn" style="width:100%;">로그인</button>
+    <button id="signup-btn" style="width:100%;">처음이라면 계정 만들기</button>
+    <p id="login-error"></p>
+  </div>
+</div>
+
+<div id="app-screen" class="container hidden">
+  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; padding-bottom:1rem; border-bottom:0.5px solid var(--border);">
+    <div>
+      <div style="font-weight:700; font-size:18px;">KFIN Team Hub</div>
+      <div id="current-user-label" style="font-size:13px; color:var(--text-secondary);"></div>
+    </div>
+    <button id="logout-btn">로그아웃</button>
+  </div>
+
+  <div id="tabs" style="display:flex; gap:6px; margin-bottom:1.5rem;">
+    <button class="tab-btn active" data-tab="notes">📝 미팅 노트</button>
+    <button class="tab-btn" data-tab="contacts">📇 컨택 리스트</button>
+    <button class="tab-btn" data-tab="ideas">💡 콘텐츠 아이디어</button>
+  </div>
+
+  <div id="panel-notes" class="panel">
+    <div class="card" style="margin-bottom:1rem;">
+      <input type="text" id="note-title" placeholder="미팅 제목 (예: 9월 이벤트 기획 회의)" style="width:100%; margin-bottom:8px;" />
+      <textarea id="note-content" placeholder="논의 내용, 결정사항, 액션 아이템을 적어주세요" rows="4" style="width:100%; margin-bottom:8px;"></textarea>
+      <button class="primary" id="add-note-btn">노트 추가</button>
+    </div>
+    <div id="notes-list" style="display:flex; flex-direction:column; gap:10px;"></div>
+  </div>
+
+  <div id="panel-contacts" class="panel hidden">
+    <div class="card" style="margin-bottom:1rem;">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
+        <input type="text" id="contact-name" placeholder="이름" />
+        <input type="text" id="contact-org" placeholder="소속/직책" />
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
+        <input type="text" id="contact-email" placeholder="이메일" />
+        <select id="contact-category">
+          <option value="멘토">멘토</option>
+          <option value="클럽">클럽 파트너</option>
+          <option value="학교">학교 관계자</option>
+          <option value="기타">기타</option>
+        </select>
+      </div>
+      <textarea id="contact-notes" placeholder="메모 (관심 분야, 연락 상태 등)" rows="2" style="width:100%; margin-bottom:8px;"></textarea>
+      <button class="primary" id="add-contact-btn">컨택 추가</button>
+    </div>
+    <div id="contacts-list" style="display:flex; flex-direction:column; gap:10px;"></div>
+  </div>
+
+  <div id="panel-ideas" class="panel hidden">
+    <div class="card" style="margin-bottom:1rem;">
+      <div style="display:grid; grid-template-columns:1fr 140px; gap:8px; margin-bottom:8px;">
+        <input type="text" id="idea-title" placeholder="콘텐츠 아이디어 제목" />
+        <select id="idea-status">
+          <option value="아이디어">아이디어</option>
+          <option value="제작중">제작중</option>
+          <option value="완료">완료</option>
+        </select>
+      </div>
+      <textarea id="idea-desc" placeholder="내용 설명 (예: 직군별 채용 타임라인 카드뉴스)" rows="2" style="width:100%; margin-bottom:8px;"></textarea>
+      <button class="primary" id="add-idea-btn">아이디어 추가</button>
+    </div>
+    <div id="ideas-list" style="display:flex; flex-direction:column; gap:10px;"></div>
+  </div>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
