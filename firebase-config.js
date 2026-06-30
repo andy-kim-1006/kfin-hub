@@ -2,10 +2,10 @@
 // Firebase Console > 프로젝트 설정 > 일반 > 내 앱 > SDK 설정 및 구성 에서 확인 가능합니다.
 
 export const firebaseConfig = {
-  apiKey: "여기에_API_KEY_붙여넣기",
-  authDomain: "여기에_프로젝트ID.firebaseapp.com",
-  projectId: "여기에_프로젝트ID",
-  storageBucket: "여기에_프로젝트ID.appspot.com",
-  messagingSenderId: "여기에_숫자",
-  appId: "여기에_앱ID"
+  apiKey: "AIzaSyBwGryiDOPGj_adeYcHugPqp3ZUaw5Ewik",
+  authDomain: "kfin-f1f7f.firebaseapp.com",
+  projectId: "kfin-f1f7f",
+  storageBucket: "kfin-f1f7f.firebasestorage.app",
+  messagingSenderId: "653940673198",
+  appId: "1:653940673198:web:438c2161c1e679143a3b3f"
 };
